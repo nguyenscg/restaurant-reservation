@@ -1,4 +1,4 @@
-const reservations = require("./00-reservations.json"); // import the reservations data to use into seed
+const reservations = require("./00-reservations.json"); // import the reservations data to use into reservations table
 
 exports.seed = function (knex) {
   return knex
