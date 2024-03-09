@@ -1,6 +1,7 @@
 // path should be: /reservations/new
 
 import React, { useState } from "react"; // import React and useState hook
+import { createReservation } from "../utils/api"; // import createReservation function
 import { useHistory } from "react-router-dom"; // import useHistory hook
 import ReservationForm from "./ReservationForm"; // import Reservation form component
 
@@ -29,24 +30,20 @@ function ReservationCreate() {
     // display a submit button that when clicked, saves new reservation, then displays the /dashboard page for the date of the new reservation
     const handleSubmit = (event) => {
         event.preventDefault();
-        setReservation({ ...initialFormData });
-    }
-
-    // display a cancel button, when button is clicked, returns user to previous page
-    const handleCancel = (event) => {
-        history.push("/");
+        createReservation({ ...initialFormData });
+        history.push(`/dashboard?date=${formData.reservation_date}`);
     }
 
     return (
         <div className="reservation-new">
-            <h1>Create Reservation:</h1>
+            <h1>Create A Reservation:</h1>
             <ReservationForm
                 formData={formData}
                 handleChange={handleChange}
                 handleSubmit={handleSubmit}
             />
             <div>
-                <button type="btn" onClick={() => history.push("/")}></button>
+                <button type="btn" onClick={() => history.push("/")}>Cancel</button>
                 <button type="submit" onClick={handleSubmit}>Submit</button>
             </div>
         </div>
