@@ -1,5 +1,3 @@
-// list Reservations. this should be the path: /reservations
-
 import React, { useState, useEffect } from "react";
 import { listReservations } from "../utils/api";
 
