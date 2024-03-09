@@ -65,6 +65,7 @@ function Dashboard({ date }) {
   const handleToday = (event) => {
     event.preventDefault();
     history.push("/dashboard");
+    setDateToday(dateToday);
   }
 
 
@@ -72,10 +73,8 @@ function Dashboard({ date }) {
   const handlePrev = (event) => {
     event.preventDefault();
     history.push("/dashboard");
-
+    setDateToday(previous(dateToday));
   }
-
-  handle
 
   return (
     <main>
