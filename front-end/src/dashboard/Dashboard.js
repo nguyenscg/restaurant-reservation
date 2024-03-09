@@ -13,11 +13,17 @@ import useQuery from "../utils/useQuery";
  * @returns {JSX.Element}
  */
 function Dashboard({ date }) {
+
+  // state hooks for manage reservaton data and potential errors
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
 
+  // state hooks for managing the select date, defaulting to the date from query string or today's date
+  const [dateToday, setDateToday] = useState(query.get("data") || today());
+
   const history = useHistory();
   const query = useQuery();
+
 
   useEffect(loadDashboard, [date]);
 
