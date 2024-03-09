@@ -25,11 +25,16 @@ function Dashboard({ date }) {
   const [tables, setTables] = useState([]);
   const [tablesError, setTablesError] = useState(null);
 
+  // state hooks for managing errors when finishing up with a table
+  const [finishTableError, setFinishTableError] = useState(null);
+
   const history = useHistory();
   const query = useQuery();
 
-
+  // useEffect hook to load dashboard data when selected date changes
   useEffect(loadDashboard, [date]);
+  // useEffect hook to load the tables data when the component mounts.
+  useEffect(loadTables, []);
 
   function loadDashboard() {
     const abortController = new AbortController();
