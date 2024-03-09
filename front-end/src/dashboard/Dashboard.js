@@ -54,11 +54,39 @@ function Dashboard({ date }) {
     return () => abortController.abort();
   }
 
+  // handler for next day
+  const handleNext = (event) => {
+    event.preventDefault();
+    history.push("/dashboard");
+    setDateToday(next(dateToday));
+  }
+
+  // handler for today
+  const handleToday = (event) => {
+    event.preventDefault();
+    history.push("/dashboard");
+  }
+
+
+// handler for previous day
+  const handlePrev = (event) => {
+    event.preventDefault();
+    history.push("/dashboard");
+
+  }
+
+  handle
+
   return (
     <main>
       <h1>Dashboard</h1>
       <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for date</h4>
+        <h4 className="mb-0">Reservations for {dateToday}</h4>
+      </div>
+      <div>
+        <button onClick={handlePrev}>Previous Date</button>
+        <button onClick={handleToday}>Today</button>
+        <button onClick={handleNext}>Next Date</button>
       </div>
       <ErrorAlert error={reservationsError} />
       <Reservations />
