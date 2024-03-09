@@ -13,6 +13,8 @@ import useQuery from "../utils/useQuery";
  * @returns {JSX.Element}
  */
 function Dashboard({ date }) {
+  const history = useHistory();
+  const query = useQuery();
 
   // state hooks for manage reservaton data and potential errors
   const [reservations, setReservations] = useState([]);
@@ -28,8 +30,6 @@ function Dashboard({ date }) {
   // state hooks for managing errors when finishing up with a table
   const [finishTableError, setFinishTableError] = useState(null);
 
-  const history = useHistory();
-  const query = useQuery();
 
   // useEffect hook to load dashboard data when selected date changes
   useEffect(loadDashboard, [date]);
@@ -65,7 +65,7 @@ function Dashboard({ date }) {
   const handleToday = (event) => {
     event.preventDefault();
     history.push("/dashboard");
-    setDateToday(dateToday);
+    setDateToday(date);
   }
 
 
