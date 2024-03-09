@@ -36,7 +36,7 @@ function ReservationCreate() {
 
     return (
         <div className="reservation-new">
-            <h1>Create A Reservation:</h1>
+            <h1>Create Reservation:</h1>
             <ReservationForm
                 formData={formData}
                 handleChange={handleChange}
