@@ -21,6 +21,10 @@ function Dashboard({ date }) {
   // state hooks for managing the select date, defaulting to the date from query string or today's date
   const [dateToday, setDateToday] = useState(query.get("data") || today());
 
+  // state hooks for managing tables data and potential errors
+  const [tables, setTables] = useState([]);
+  const [tablesError, setTablesError] = useState(null);
+
   const history = useHistory();
   const query = useQuery();
 
