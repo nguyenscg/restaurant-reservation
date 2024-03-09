@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import ReservationForm from "./ReservationForm";
 
 function ReservationEdit() {
 
     const [reservation, setReservation] = useState({});
+    const history = useHistory();
 
     const initialFormData = {
         first_name: "",
