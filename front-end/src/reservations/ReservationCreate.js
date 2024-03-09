@@ -4,7 +4,7 @@ import React, { useState } from "react"; // import React and useState hook
 import { useHistory } from "react-router-dom"; // import useHistory hook
 import ReservationForm from "./ReservationForm"; // import Reservation form component
 
-function CreateReservation() {
+function ReservationCreate() {
     // inputs: first_name, last_name, mobile_number, reservation_date, reservation_time, people
     // display any error messages returned from API
     const initialFormData = { // initialState with all empty fields
@@ -53,4 +53,4 @@ function CreateReservation() {
     )
 }
 
-export default CreateReservation;
+export default ReservationCreate;
