@@ -76,6 +76,17 @@ function Dashboard({ date }) {
     setDateToday(previous(dateToday));
   }
 
+  // handler for finish table
+  const handleFinish = (tableId) => {
+    if (window.confirm("Finish this table?")) {
+      finishTable(tableId)
+        .then(() => {
+          loadTables();
+        })
+        .catch(setFinishTableError);
+    }
+  };
+
   return (
     <main>
       <h1>Dashboard</h1>
@@ -88,7 +99,21 @@ function Dashboard({ date }) {
         <button onClick={handleNext}>Next Date</button>
       </div>
       <ErrorAlert error={reservationsError} />
-      <Reservations />
+      <Reservations
+        reservations={reservations} 
+      />
+      <h2>Tables</h2>
+      <ErrorAlert error={tablesError || finishTableError} />
+      <ul>
+        {tables.map((table) => (
+          <li key={table.table_id}>
+            {table.table_name} - Capacity: {table.capacity} - Status: {table.reservation_id ? "Occupied" : "Free"}
+            {table.reservation_id && (
+              <button onClick={() => handleFinish(table.table_id)}>Finish</button>
+            )}
+          </li>
+        ))}
+      </ul>
     </main>
   );
 }
