@@ -10,7 +10,7 @@ function Reservations() {
         const fetchList = async () => {
             const abortController = new AbortController();
             try {
-                const response = await listReservations();
+                const response = await listReservations(abortController.signal);
                 setReservations(response);
             }
             catch(error) {

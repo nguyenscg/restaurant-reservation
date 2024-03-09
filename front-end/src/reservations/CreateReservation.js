@@ -14,12 +14,21 @@ function CreateReservation() {
         reservation_time: "",
         people: 0,
     }
-    const [reservation, setReservation] = useState(null); // initalize state of reservation
+    const [reservation, setReservation] = useState({...initialState}); // initalize state of reservation
     const history = useHistory();
+
+    // handle changes made to inputs so they can correctly be submitted
+    const handleChange = ({ target }) => {
+        setReservation({
+            ...reservation,
+            [target.name]: target.value,
+        });
+    };
 
     // display a submit button that when clicked, saves new reservation, then displays the /dashboard page for the date of the new reservation
     const handleSubmit = (event) => {
         event.preventDefault();
+        setReservation({ ...initialState });
     }
 
     // display a cancel button, when button is clicked, returns user to previous page
