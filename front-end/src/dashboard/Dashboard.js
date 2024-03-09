@@ -45,6 +45,15 @@ function Dashboard({ date }) {
     return () => abortController.abort();
   }
 
+  function loadTables() {
+    const abortController = new AbortController();
+    setTablesError(null);
+    listTables(abortController.signal)
+      .then(setTables)
+      .catch(setTablesError);
+    return () => abortController.abort();
+  }
+
   return (
     <main>
       <h1>Dashboard</h1>
