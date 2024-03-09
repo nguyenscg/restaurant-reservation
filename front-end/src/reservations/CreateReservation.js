@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom"; // import useHistory hook
 function CreateReservation() {
     // inputs: first_name, last_name, mobile_number, reservation_date, reservation_time, people
     // display any error messages returned from API
-    const initialState = { // initialState with all empty fields
+    const formData = { // initialState with all empty fields
         first_name: "",
         last_name: "",
         mobile_number: "",
@@ -14,7 +14,7 @@ function CreateReservation() {
         reservation_time: "",
         people: 0,
     }
-    const [reservation, setReservation] = useState({...initialState}); // initalize state of reservation
+    const [reservation, setReservation] = useState({...formData}); // initalize state of reservation
     const history = useHistory();
 
     // handle changes made to inputs so they can correctly be submitted
@@ -28,7 +28,7 @@ function CreateReservation() {
     // display a submit button that when clicked, saves new reservation, then displays the /dashboard page for the date of the new reservation
     const handleSubmit = (event) => {
         event.preventDefault();
-        setReservation({ ...initialState });
+        setReservation({ ...formData });
     }
 
     // display a cancel button, when button is clicked, returns user to previous page
