@@ -9,8 +9,8 @@ exports.up = function(knex) {
             .foreign("reservation_id")
             .references("reservation_id")
             .inTable("reservations")
-
-    })
+        table.timestamps(true, true);
+    });
 };
 
 exports.down = function(knex) {
