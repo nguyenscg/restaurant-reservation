@@ -79,7 +79,7 @@ function Dashboard({ date }) {
   // handler for finish table
   const handleFinish = (tableId) => {
     if (window.confirm("Finish this table?")) {
-      finishTable(tableId)
+      finishTableError(tableId)
         .then(() => {
           loadTables();
         })
