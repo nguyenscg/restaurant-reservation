@@ -2,11 +2,12 @@
 
 import React, { useState } from "react"; // import React and useState hook
 import { useHistory } from "react-router-dom"; // import useHistory hook
+import ReservationForm from "./ReservationForm"; // import Reservation form component
 
 function CreateReservation() {
     // inputs: first_name, last_name, mobile_number, reservation_date, reservation_time, people
     // display any error messages returned from API
-    const formData = { // initialState with all empty fields
+    const initialFormData = { // initialState with all empty fields
         first_name: "",
         last_name: "",
         mobile_number: "",
@@ -14,13 +15,13 @@ function CreateReservation() {
         reservation_time: "",
         people: 0,
     }
-    const [reservation, setReservation] = useState({...formData}); // initalize state of reservation
+    const [formData, setFormData] = useState({...initialFormData}); // initalize state of reservation
     const history = useHistory();
 
     // handle changes made to inputs so they can correctly be submitted
     const handleChange = ({ target }) => {
-        setReservation({
-            ...reservation,
+        setFormData({
+            ...formData,
             [target.name]: target.value,
         });
     };
@@ -28,7 +29,7 @@ function CreateReservation() {
     // display a submit button that when clicked, saves new reservation, then displays the /dashboard page for the date of the new reservation
     const handleSubmit = (event) => {
         event.preventDefault();
-        setReservation({ ...formData });
+        setReservation({ ...initialFormData });
     }
 
     // display a cancel button, when button is clicked, returns user to previous page
@@ -37,15 +38,17 @@ function CreateReservation() {
     }
 
     return (
-        <div>
+        <div className="reservation-new">
             <h1>Create Reservation:</h1>
-            <form>
-                <div className="form-group">
-                    <label htmlFor="first_name">First name</label>
-                    <input name="first_name" type="text"></input>
-                </div>
-            </form>
-            <button type="btn">Submit</button>
+            <ReservationForm
+                formData={formData}
+                handleChange={handleChange}
+                handleSubmit={handleSubmit}
+            />
+            <div>
+                <button type="btn" onClick={() => history.push("/")}></button>
+                <button type="submit" onClick={handleSubmit}>Submit</button>
+            </div>
         </div>
     )
 }
