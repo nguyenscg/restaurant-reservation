@@ -21,7 +21,7 @@ function Reservations() {
         fetchList();
     }, []);
 
-
+console.log(reservations);
     return (
         <div>
             <h2>Reservations List</h2>
