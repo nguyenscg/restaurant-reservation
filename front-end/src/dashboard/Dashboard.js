@@ -104,16 +104,20 @@ function Dashboard({ date }) {
       />
       <h2>Tables</h2>
       <ErrorAlert error={tablesError || finishTableError} />
-      <ul>
-        {tables.map((table) => (
-          <li key={table.table_id}>
-            {table.table_name} - Capacity: {table.capacity} - Status: {table.reservation_id ? "Occupied" : "Free"}
-            {table.reservation_id && (
-              <button onClick={() => handleFinish(table.table_id)}>Finish</button>
-            )}
-          </li>
-        ))}
-      </ul>
+      {tables.map((table) => (
+        <div className="row border m-3" key={table.table_id}>
+          <p className="col-3 m-2">{table.table_name}</p>
+          <p className="col-3 m-2">Capacity: {table.capacity}</p>
+          {table.reservation_id === null ? (
+            <p className="m-2" id={`data-table-id-status=${table.table_id}`}>Status: Free</p>
+          ) : (
+            <p className="m-2" id={`data-table-id-status=${table.table_id}`}>Status: Occupied</p>
+          )}
+          {table.reservation_id !== null && (
+            <button type="button" className="btn btn-primary ml-3 m-2" data-table-id-finish={table.table_id} onClick={() => {handleFinish(table.table_id);}}>Finish</button>
+          )}
+        </div>
+      ))}
     </main>
   );
 }
