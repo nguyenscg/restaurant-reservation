@@ -144,10 +144,22 @@ async function update(req, res) {
   res.status(200).json({ data });
 }
 
+async function updateReservationStatus(req, res, next) {
+  const { reservation_id } = req.params;
+  const { status } = req.body;
+
+  try {
+    const updatedReservation = await updateStat(reservation_id, status);
+    res.json({ data: updatedReservation });
+  } catch (error) {
+    next(error);
+  }
+}
+
 
 module.exports = {
   list: asyncErrorBoundary(list),
   read: [reservationExists, asyncErrorBoundary(read)],
   create: [hasOnlyValidProperties, hasRequiredProperties, isValidDate, hasValidTime, isValidNumber, asyncErrorBoundary(create)],
-  update: [reservationExists, hasOnlyValidProperties, hasRequiredProperties, hasValidStatus, asyncErrorBoundary(update)],
+  update: [reservationExists, hasOnlyValidProperties, hasRequiredProperties, hasValidStatus, asyncErrorBoundary(update), asyncErrorBoundary(updateReservationStatus)],
 };

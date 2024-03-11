@@ -44,6 +44,10 @@ function search(mobile_number) {
         .orderBy("reservation_date");
 }
 
+// set the status of the reservation to cancelled using a PUT to /reservations/:reservation_id/status with a body of {data: { status: "cancelled" } }.
+// need an updateStatus function
+
+
 module.exports = {
     list,
     listByDate,
