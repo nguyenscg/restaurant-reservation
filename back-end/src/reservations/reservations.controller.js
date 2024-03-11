@@ -29,6 +29,20 @@ function hasOnlyValidProperties(req, res, next) {
   next();
 }
 
+function hasValidStatus(req, res, next) {
+  const { status } = req.body.data;
+  const resStatus = res.locals.reservation.status;
+
+  if (status === "booked" || status === "seated" || status === "finished" || status === "cancelled") {
+    res.locals.status = status;
+    return next();
+  }
+  next({
+    status: 400,
+    message: `Invalid status`,
+  });
+}
+
 async function list(req, res) {
   const { date } = req.query;
   let data;
@@ -73,5 +87,5 @@ module.exports = {
   list: asyncErrorBoundary(list),
   read: [reservationExists, asyncErrorBoundary(read)],
   create: [hasOnlyValidProperties, hasRequiredProperties, asyncErrorBoundary(create)],
-  update: asyncErrorBoundary(update),
+  update: [reservationExists, hasOnlyValidProperties, hasRequiredProperties, hasValidStatus, asyncErrorBoundary(update)],
 };
