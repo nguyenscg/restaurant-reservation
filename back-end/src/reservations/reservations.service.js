@@ -47,6 +47,11 @@ function search(mobile_number) {
 // set the status of the reservation to cancelled using a PUT to /reservations/:reservation_id/status with a body of {data: { status: "cancelled" } }.
 // need an updateStatus function
 
+function updateStat(reservation_id, status) {
+    return knex("reservations")
+        .where({ reservation_id })
+        .update({status: status }, "*")
+}
 
 module.exports = {
     list,
@@ -55,4 +60,5 @@ module.exports = {
     create,
     update,
     search,
+    updateStat,
 }

@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import { createTable, listReservations } from "../utils/api";
 
 function TableCreate() {
     const initialFormData = {
@@ -9,6 +10,7 @@ function TableCreate() {
 
     const [formData, setFormData] = useState({...initialFormData});
     const history = useHistory();
+    const [seatError, setSeatError] = useState(null);
 
     const handleChange = ({ target }) => {
         setFormData({
@@ -55,7 +57,7 @@ function TableCreate() {
                     onChange={handleChange}
             />
             <div>
-                <button type="btn" onClick={() => history.push("/")}>Cancel</button>
+                <button type="btn" onClick={() => history.push("/dashboard")}>Cancel</button>
                 <button type="submit" onClick={handleSubmit}>Submit</button>
             </div>
         </form>
