@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 
 function TableCreate() {
     const initialFormData = {
@@ -7,6 +8,7 @@ function TableCreate() {
     };
 
     const [formData, setFormData] = useState({...initialFormData});
+    const history = useHistory();
 
     const handleChange = ({ target }) => {
         setFormData({
