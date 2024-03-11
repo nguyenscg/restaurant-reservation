@@ -1,5 +1,33 @@
 const service = require("./reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
+const hasProperties = require("../errors/hasProperties");
+const hasRequiredProperties = hasProperties("first_name", "last_name", "mobile_number");
+
+const VALID_PROPERTIES = [
+  "first_name",
+  "last_name",
+  "mobile_number",
+  "reservation_date",
+  "reservation_time",
+  "people",
+  "status",
+];
+
+function hasOnlyValidProperties(req, res, next) {
+  const { data = {} } = req.body;
+
+  const invalidFields = Object.keys(data).filter(
+    (field) => !VALID_PROPERTIES.includes(field)
+  );
+
+  if (invalidFields.length) {
+    return next({
+      status: 400,
+      message: `Invalid field(s): ${invalidFields.join(", ")}`,
+    });
+  }
+  next();
+}
 
 async function list(req, res) {
   const { date } = req.query;
@@ -15,6 +43,15 @@ async function list(req, res) {
 async function read(req, res) {
   const data = res.locals.reservation;
   res.json({ data });
+}
+
+async function reservationExists(req, res, next) {
+  const reservation = await service.read(req.params.reservation_id);
+  if (reservation) {
+    res.locals.reservation = reservation;
+    return next();
+  }
+  next({ status: 404, message: `Reservation cannot be found.` });
 }
 
 async function create(req, res) {
@@ -35,6 +72,6 @@ async function update(req, res) {
 module.exports = {
   list: asyncErrorBoundary(list),
   read: asyncErrorBoundary(read),
-  create: asyncErrorBoundary(create),
+  create: [hasOnlyValidProperties, hasRequiredProperties, asyncErrorBoundary(create)],
   update: asyncErrorBoundary(update),
 };
