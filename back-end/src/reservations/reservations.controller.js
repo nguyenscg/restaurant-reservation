@@ -1,7 +1,7 @@
 const service = require("./reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 const hasProperties = require("../errors/hasProperties");
-const hasRequiredProperties = hasProperties("first_name", "last_name", "mobile_number");
+const hasRequiredProperties = hasProperties("first_name", "last_name", "mobile_number", "reservation_date", "reservation_time", "people");
 
 const VALID_PROPERTIES = [
   "first_name",
@@ -71,7 +71,7 @@ async function update(req, res) {
 
 module.exports = {
   list: asyncErrorBoundary(list),
-  read: asyncErrorBoundary(read),
+  read: [reservationExists, asyncErrorBoundary(read)],
   create: [hasOnlyValidProperties, hasRequiredProperties, asyncErrorBoundary(create)],
   update: asyncErrorBoundary(update),
 };
