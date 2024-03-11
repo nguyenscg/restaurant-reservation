@@ -23,5 +23,5 @@ function create(table) {
 module.exports = {
     list,
     read,
-    create
+    create,
 }
