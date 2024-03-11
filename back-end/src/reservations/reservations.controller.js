@@ -43,6 +43,18 @@ function hasValidStatus(req, res, next) {
   });
 }
 
+function hasValidTime(req, res, next) {
+  const { reservation_time } = req.body.data;
+
+  if (!reservation_time) {
+    return res.sendStatus(400)
+  }
+  next({
+    status: 400,
+    message: `Invalid time`,
+  });
+}
+
 async function list(req, res, next) {
   try {
     const { date, mobile_number } = req.query;
@@ -68,12 +80,13 @@ async function read(req, res) {
 }
 
 async function reservationExists(req, res, next) {
-  const reservation = await service.read(req.params.reservation_id);
+  const { reservation_id } = req.params;
+  const reservation = await service.read(reservation_id);
   if (reservation) {
     res.locals.reservation = reservation;
     return next();
   }
-  next({ status: 404, message: `Reservation cannot be found.` });
+  next({ status: 404, message: `Reservation id not found: ${reservation_id}` });
 }
 
 async function create(req, res) {
