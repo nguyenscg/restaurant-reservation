@@ -28,7 +28,7 @@ async function create(req, res) {
 
 async function hasValidName(req, res, next) {
     const table_name = req.body.data.table_name;
-    if (table_name.length < 1 ) {
+    if (!table_name) {
         return next({
             status: 400,
             message: `Invalid table_name`
@@ -37,7 +37,19 @@ async function hasValidName(req, res, next) {
     next();
 }
 
+async function update(req, res, next) {
+    try {
+        const { reservation_id } = req.body.data;
+        const updatedRecord = await service.update(reservation_id, res.locals.table.table_id);
+        res.status(200).json({ data: updatedRecord });
+    } catch (error) {
+        next(error);
+    }
+}
+
+
 module.exports = {
     list: asyncErrorBoundary(list),
     create: [hasRequiredProperties, hasValidName, asyncErrorBoundary(create)],
+    update: asyncErrorBoundary(update),
 }
