@@ -8,7 +8,7 @@ function TableCreate() {
 
     const [formData, setFormData] = useState({...initialFormData});
 
-    const handleChange = ({ event }) => {
+    const handleChange = ({ target }) => {
         setFormData({
             ...formData,
             [target.name]: target.value,
