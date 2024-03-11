@@ -5,7 +5,6 @@ function ReservationForm({ formData, handleChange, handleSubmit }) {
     // return a form with text input for: first name, last name, mobile number, reservation date, reservation time, and people
     return (
         <form name="reservation-create" onSubmit={handleSubmit}>
-            <h3>Create Reservation</h3>
             <div className="form-group">
                 <label htmlFor="name">First Name:</label>
                     <input
@@ -13,7 +12,7 @@ function ReservationForm({ formData, handleChange, handleSubmit }) {
                         name="first_name"
                         type="text"
                         value={formData.first_name}
-                        required
+                        required={true}
                         onChange={handleChange}
                         className="form-control"
                     />
@@ -25,7 +24,7 @@ function ReservationForm({ formData, handleChange, handleSubmit }) {
                         name="last_name"
                         type="text"
                         value={formData.last_name}
-                        required
+                        required={true}
                         onChange={handleChange}
                         className="form-control"
                     />
@@ -37,7 +36,7 @@ function ReservationForm({ formData, handleChange, handleSubmit }) {
                         name="mobile_number"
                         type="text"
                         value={formData.mobile_number}
-                        required
+                        required={true}
                         onChange={handleChange}
                         className="form-control"
                     />
@@ -49,7 +48,7 @@ function ReservationForm({ formData, handleChange, handleSubmit }) {
                         name="reservation_date"
                         type="date"
                         value={formData.reservation_time}
-                        required
+                        required={true}
                         placeholder="YYYY-MM-DD" 
                         pattern="\d{4}-\d{2}-\d{2}"
                         onChange={handleChange}
@@ -63,7 +62,7 @@ function ReservationForm({ formData, handleChange, handleSubmit }) {
                         name="reservation_time"
                         type="time"
                         value={formData.reservation_time}
-                        required
+                        required={true}
                         placeholder="HH:MM" 
                         pattern="[0-9]{2}:[0-9]{2}"
                         onChange={handleChange}
@@ -77,7 +76,7 @@ function ReservationForm({ formData, handleChange, handleSubmit }) {
                         name="people"
                         type="number"
                         value={formData.people}
-                        required
+                        required={true}
                         onChange={handleChange}
                         className="form-control"
                     />
