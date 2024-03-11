@@ -89,6 +89,18 @@ async function reservationExists(req, res, next) {
   next({ status: 404, message: `Reservation id not found: ${reservation_id}` });
 }
 
+async function isValidDate(req, res, next) {
+  const { reservation_date } = req.body;
+
+  // Validate the reservation_date using appropriate validation logic
+  // For example, you can use a library like Moment.js to validate the date
+  if (!reservation_date) {
+    // If the date is not valid, return a 400 status code
+    return res.status(400).json({ error: "reservation_date is not a valid date" });
+  }
+  next();
+}
+
 async function create(req, res) {
   const data = await service.create(req.body.data);
   res.status(201).json({ data });
@@ -107,6 +119,6 @@ async function update(req, res) {
 module.exports = {
   list: asyncErrorBoundary(list),
   read: [reservationExists, asyncErrorBoundary(read)],
-  create: [hasOnlyValidProperties, hasRequiredProperties, asyncErrorBoundary(create)],
+  create: [hasOnlyValidProperties, hasRequiredProperties, isValidDate, asyncErrorBoundary(create)],
   update: [reservationExists, hasOnlyValidProperties, hasRequiredProperties, hasValidStatus, asyncErrorBoundary(update)],
 };
