@@ -1,6 +1,27 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { listTables } from "../utils/api";
+
 
 function TableList({ tables }) {
+    const [tables, setTables] = useState([]);
+    
+    useEffect(() => {
+        const fetchList = async () => {
+            const abortController = new AbortController();
+            try {
+                const response = await listTables(abortController.signal);
+                setTables(response);
+            }
+            catch(error) {
+                console.log("Error fetching list", error);
+            }
+            return () => {
+                abortController.abort();
+            }
+        }
+        fetchList();
+    }, []);
+    
     return (
         <div className="listTable">
             {tables.map((table) => (
