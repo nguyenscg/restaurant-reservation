@@ -8,7 +8,14 @@ function TableCreate() {
 
     const [formData, setFormData] = useState({...initialFormData});
 
-    const handleChange = (event) => {
+    const handleChange = ({ event }) => {
+        setFormData({
+            ...formData,
+            [target.name]: target.value,
+        });
+    }
+    
+    const handleSubmit = (event) => {
         event.preventDefault();
         const message = `Is this table ready to seat new guests? This cannot be undone.`;
         if (window.confirm(message)) {
