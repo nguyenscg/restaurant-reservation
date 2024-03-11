@@ -1,69 +1,67 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { createTable, listReservations } from "../utils/api";
+import TableForm from "./TableForm";
+import { createTable } from "../utils/api";
+import ErrorAlert from "../layout/ErrorAlert";
 
 function TableCreate() {
-    const initialFormData = {
-        table_name: "",
-        capacity: 0,
-    };
+  const history = useHistory();
 
-    const [formData, setFormData] = useState({...initialFormData});
-    const history = useHistory();
-    const [seatError, setSeatError] = useState(null);
+  const initialTableState = {
+    table_name: "",
+    capacity: "",
+  };
 
-    const handleChange = ({ target }) => {
-        setFormData({
-            ...formData,
-            [target.name]: target.value,
-        });
+  const [tableData, setTableData] = useState({
+    ...initialTableState,
+  });
+  const [createTableError, setTableError] = useState(null);
+
+  const changeHandler = (e) => {
+    e.preventDefault();
+        setTableData({
+        ...tableData,
+        [e.target.name]: e.target.value,
+      });
     }
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const message = `Is this table ready to seat new guests? This cannot be undone.`;
-        if (window.confirm(message)) {
-            const abortController = new AbortController();
-            setSeatError(null);
-            unassignTable(table_id, abortController.signal)
-            .then(() => {
-                loadReservations();
-            })
-            .catch(setSeatError);
-            return () => abortController.abort();
-        }
-    };
-    
-    return (
-    <div>
-        <h2>Create Table:</h2>
-        <form obSubmit={handleSubmit}>
-            <label htmlFor="table_name">Table Name:</label>
-            <input
-                id="table_name"
-                name="table_name"
-                type="text"
-                required
-                value={table.table_name}
-                onChange={handleChange}
-                />
-            <label htmlFor="capacity">Capacity:</label>
-            <input
-                    id="capacity"
-                    name="capacity"
-                    type="number"
-                    required
-                    value={table.capcity}
-                    onChange={handleChange}
-            />
-            <div>
-                <button type="btn" onClick={() => history.push("/dashboard")}>Cancel</button>
-                <button type="submit" onClick={handleSubmit}>Submit</button>
-            </div>
-        </form>
-    </div>
-    );
-    
+    const changeCapacityHandler = (e) => {
+      e.preventDefault();
+          setTableData({
+          ...tableData,
+          [e.target.name]: Number(e.target.value),
+        });
+      }
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    const controller = new AbortController();
+    createTable(tableData, controller.signal)
+      .then(() => history.push("/"))
+      .catch(setTableError);
+    return () => controller.abort();
+  };
+
+  const cancelHandler = (e) => {
+    e.preventDefault();
+    const controller = new AbortController();
+    history.goBack();
+    return () => controller.abort();
+  };
+
+  return (
+    <section>
+      <h2>New Table:</h2>
+      <ErrorAlert error={createTableError} />
+      <TableForm
+        changeHandler={changeHandler}
+        changeCapacityHandler={changeCapacityHandler}
+        tableData={tableData}
+        submitHandler={submitHandler}
+        cancelHandler={cancelHandler}
+      />
+    </section>
+  );
 }
 
 export default TableCreate;

@@ -1,43 +1,54 @@
-import React, { useState, useEffect } from "react";
-import { listTables } from "../utils/api";
-
+import { useHistory } from "react-router-dom";
+import { unassignTable } from "../utils/api";
 
 function TableList({ tables }) {
-    const [tables, setTables] = useState([]);
-    
-    useEffect(() => {
-        const fetchList = async () => {
-            const abortController = new AbortController();
-            try {
-                const response = await listTables(abortController.signal);
-                setTables(response);
-            }
-            catch(error) {
-                console.log("Error fetching list", error);
-            }
-            return () => {
-                abortController.abort();
-            }
-        }
-        fetchList();
-    }, []);
-    
-    return (
-        <div className="listTable">
-            {tables.map((table) => (
-                <div className="row">
-                    <div className="item">
-                        <div className="col">
-                            <h3>Table {table.table_name}</h3>
-                            <div>
-                                <h3 className="item">{table.capacity} seats</h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            ))}
-        </div>
+  const history = useHistory();
+
+  const finishHandler = (e) => {
+    e.preventDefault();
+    const controller = new AbortController();
+    const message = `Is this table ready to seat new guests? This cannot be undone.`;
+    if (window.confirm(message)) {
+      unassignTable(e.target.value, controller.signal)
+      .then(() => history.push("/"))
+    }
+    return () => controller.abort();
+  };
+
+  return (
+    <table className="table">
+      <thead>
+        <tr>
+          <th scope="col">Table Name</th>
+          <th scope="col">Capacity</th>
+          <th scope="col">Status</th>
+          <th scope="col">Click when table is open</th>
+        </tr>
+      </thead>
+      <tbody>{tables.map((table) => {
+           return (
+      <tr key={table.table_id}>
+        <td>{table.table_name}</td>
+        <td>{table.capacity}</td>
+        <td data-table-id-status={table.table_id}>{table.reservation_id ? "occupied" : "free" }</td>
+        <td>
+          {table.reservation_id ? (
+            <button
+              data-table-id-finish={table.table_id}
+              type="button"
+              className="btn-dark"
+              onClick={finishHandler}
+              value={table.table_id}
+            >
+              Finish
+            </button>
+          ) : null}
+        </td>
+      </tr>
     );
+  })}</tbody>
+    </table>
+  );
 }
 
 export default TableList;
