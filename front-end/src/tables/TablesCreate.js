@@ -14,7 +14,7 @@ function TableCreate() {
             [target.name]: target.value,
         });
     }
-    
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const message = `Is this table ready to seat new guests? This cannot be undone.`;
@@ -52,6 +52,10 @@ function TableCreate() {
                     value={table.capcity}
                     onChange={handleChange}
             />
+            <div>
+                <button type="btn" onClick={() => history.push("/")}>Cancel</button>
+                <button type="submit" onClick={handleSubmit}>Submit</button>
+            </div>
         </form>
     </div>
     );
