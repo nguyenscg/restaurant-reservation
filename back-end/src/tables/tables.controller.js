@@ -3,6 +3,17 @@ const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 const hasProperties = require ("../errors/hasProperties");
 const hasRequiredProperties = hasProperties("table_name", "capacity");
 
+async function hasValidName(req, res, next) {
+    const table_name = req.body.data.table_name;
+    if (!table_name) {
+        return next({
+            status: 400,
+            message: `Invalid table_name`
+        })
+    }
+    next();
+}
+
 // list all tables
 async function list(req, res) {
     const data = await service.list();
@@ -26,17 +37,6 @@ async function create(req, res) {
     res.status(201).json({ data });
 }
 
-async function hasValidName(req, res, next) {
-    const table_name = req.body.data.table_name;
-    if (!table_name) {
-        return next({
-            status: 400,
-            message: `Invalid table_name`
-        })
-    }
-    next();
-}
-
 async function update(req, res, next) {
     try {
         const { reservation_id } = req.body.data;
@@ -47,9 +47,21 @@ async function update(req, res, next) {
     }
 }
 
+// async function seatTable(req, res, next) {
+//     const status = res.locals.reservation.status;
+
+//     if (status === "seated") {
+//         return next({
+//             status: 400,
+//             message: `Table is already seated`,
+//         });
+//     }
+//     next();
+// }
+
 
 module.exports = {
     list: asyncErrorBoundary(list),
     create: [hasRequiredProperties, hasValidName, asyncErrorBoundary(create)],
-    update: asyncErrorBoundary(update),
+    update: [asyncErrorBoundary(tableExists), asyncErrorBoundary(update)],
 }

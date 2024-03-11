@@ -20,8 +20,30 @@ function create(table) {
         .then((createdTable) => createdTable[0]);
 }
 
+// make sure the tables and reservations records are always in sync with each
+function update(reservation_id, table_id) {
+    return knex.transaction(function (trx) {
+        return knex("reservations")
+            .where({ reservation_id })
+            .update({ status: "seated" })
+            .transacting(trx)
+            .then(() => {
+                return knex("tables")
+                    .where({ table_id })
+                    .update({
+                        reservation_id,
+                        occupied: true
+                    })
+                    .transacting(trx);
+            })
+            .then(trx.commit)
+            .catch(trx.rollback);
+    });
+}
+
 module.exports = {
     list,
     read,
     create,
+    update,
 }
