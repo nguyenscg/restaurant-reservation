@@ -99,6 +99,7 @@ function Dashboard({ date }) {
         <button onClick={handleNext}>Next Date</button>
       </div>
       <ErrorAlert error={reservationsError} />
+      <h2>Reservations</h2>
       <Reservations
         reservations={reservations} 
       />

@@ -22,19 +22,17 @@ function Reservations() {
     }, []);
 
     return (
-        <div>
-            <h2>Reservations List</h2>
-            <table>
-                <thead>
+        <table className="reservation">
+            <thead>
                     <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Mobile Number</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>People</th>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Mobile Number</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Time</th>
+                        <th scope="col">People</th>
                     </tr>
-                </thead>
+            </thead>
                 <tbody>
                     {reservations.map(reservation => (
                         <tr key={reservation.id}>
@@ -48,7 +46,6 @@ function Reservations() {
                     ))}
                 </tbody>
             </table>
-        </div>
     );
 }
 
