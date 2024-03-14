@@ -5,6 +5,11 @@ import { listReservations } from "../utils/api";
 // search for a reservation by phone number || path: /search
 
 function Search() {
+    const [mobileNumber, setMobileNumber] = useState(""); // initialize state of mobile number
+
+    const handleChange = (event) => {
+        setMobileNumber(event.target.value);
+    }
 
     const handleSubmit = (event) => {
         event.preventDefault();
