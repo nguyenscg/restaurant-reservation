@@ -57,12 +57,12 @@ function hasReservationTime(req, res, next) {
 
 function peopleIsANumber(req, res, next) {
   const people = req.body.data.people;
-  if (typeof people === 'number' && !isNaN(people)) {
+  if (people > 0 && typeof people === "number") {
     return next();
   }
   next({
     status: 400,
-    message: "people must be a number.",
+    message: "Valid people property required.",
   });
 }
 
