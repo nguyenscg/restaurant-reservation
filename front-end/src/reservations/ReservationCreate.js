@@ -4,7 +4,6 @@ import React, { useState } from "react"; // import React and useState hook
 import { createReservation } from "../utils/api"; // import createReservation function
 import { useHistory } from "react-router-dom"; // import useHistory hook
 import ReservationForm from "./ReservationForm"; // import Reservation form component
-import ErrorAlert from "../layout/ErrorAlert";
 
 function ReservationCreate() {
     // inputs: first_name, last_name, mobile_number, reservation_date, reservation_time, people
@@ -30,16 +29,11 @@ function ReservationCreate() {
     };
 
     // display a submit button that when clicked, saves new reservation, then displays the /dashboard page for the date of the new reservation
-    const handleSubmit = async (event) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
         const abortController = new AbortController();
-        try {
-            await createReservation(formData, abortController.signal);
-            history.push(`/dashboard?date=${formData.reservation_date}`);
-        } catch (error) {
-            setReservationError(error);
-        }
-        return () => abortController.abort();
+        createReservation(formData, abortController.signal);
+        history.push(`/dashboard?date=${formData.reservation_date}`);
     }
 
     return (
