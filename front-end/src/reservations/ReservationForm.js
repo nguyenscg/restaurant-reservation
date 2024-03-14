@@ -47,7 +47,7 @@ function ReservationForm({ formData, handleChange, handleSubmit }) {
                         id="reservation_date"
                         name="reservation_date"
                         type="date"
-                        value={formData.reservation_time}
+                        value={formData.reservation_date}
                         required={true}
                         placeholder="YYYY-MM-DD" 
                         pattern="\d{4}-\d{2}-\d{2}"
