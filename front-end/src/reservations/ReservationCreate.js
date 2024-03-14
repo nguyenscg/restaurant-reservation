@@ -45,7 +45,6 @@ function ReservationCreate() {
     return (
         <div className="reservation-new">
             <h1>Create Reservation:</h1>
-            <ErrorAlert error={reservationError} />
             <ReservationForm
                 formData={formData}
                 handleChange={handleChange}
