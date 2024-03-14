@@ -29,72 +29,57 @@ function hasOnlyValidProperties(req, res, next) {
   next();
 }
 
-async function isValidDate(req, res, next) {
-  const { reservation_date, reservation_time } = req.body.data;
-  
-  // Check if the reservation_date is provided
-  if (!reservation_date) {
-    return next({
-      status: 400,
-      message: "reservation_date is required.",
-    });
-  }
-
-  // Check if the reservation_date is on a Tuesday (restaurant is closed)
-  const dayOfWeek = new Date(reservation_date).getUTCDay();
-  if (dayOfWeek === 2) { // 2 corresponds to Tuesday
-    return next({
-      status: 400,
-      message: "The restaurant is closed on Tuesdays.",
-    });
-}
-
-  // Check if the reservation is in the future
-  const reservationDateTime = new Date(`${reservation_date}T${reservation_time}`);
-  if (reservationDateTime <= new Date()) {
-    return next({
-      status: 400,
-      message: "Reservation must be in the future.",
-    });
-  }
-
-  // If all checks pass, proceed to the next middleware or route handler
-  return next();
-}
-
-function hasValidTime(req, res, next) {
-  const { reservation_time } = req.body.data;
-
-  if (!reservation_time) {
-    return next({
-      status: 400,
-      message: "reservation_time is required",
-    });
-  }
-  next(); // Call next to pass control to the next middleware or route handler
-}
-
-async function isValidNumber(req, res, next) {
-  const { people } = req.body;
-  if (typeof people !== 'number' || isNaN(people) || people <= 0) {
-    return res.status(400).json({ error: "people must be a number greater than 0" });
-  }
-  next(); // Call next to pass control to the next middleware or route handler
-}
-
-function hasValidStatus(req, res, next) {
-  const { status } = req.body.data;
-  const resStatus = res.locals.reservation.status;
-
-  if (status === "booked" || status === "seated" || status === "finished" || status === "cancelled") {
-    res.locals.status = status;
+function validateDate(req, res, next) {
+  const date = req.body.data.reservation_date;
+  const valid = Date.parse(date);
+  if (valid) {
     return next();
   }
   next({
     status: 400,
-    message: `Invalid status`,
+    message: "reservation_date must be valid date.",
   });
 }
+
+function hasReservationTime(req, res, next) {
+  const regex = /^([0-5][0-9]):([0-5][0-9])$/;
+  let time = req.body.data.reservation_time;
+  const valid = time.match(regex);
+
+  if (valid) {
+    return next();
+  }
+  next({
+    status: 400,
+    message: "reservation_time must be valid time.",
+  });
+}
+
+function peopleIsANumber(req, res, next) {
+  const people = req.body.data.people;
+  if (typeof people === 'number' && !isNaN(people)) {
+    return next();
+  }
+  next({
+    status: 400,
+    message: "people must be a number.",
+  });
+}
+
+
+// function hasValidStatus(req, res, next) {
+//   const { status } = req.body.data;
+//   const resStatus = res.locals.reservation.status;
+
+//   if (status === "booked" || status === "seated" || status === "finished" || status === "cancelled") {
+//     res.locals.status = status;
+//     return next();
+//   }
+//   next({
+//     status: 400,
+//     message: `Invalid status`,
+//   });
+// }
 
 async function list(req, res, next) {
   try {
@@ -160,6 +145,6 @@ async function updateReservationStatus(req, res, next) {
 module.exports = {
   list: asyncErrorBoundary(list),
   read: [reservationExists, asyncErrorBoundary(read)],
-  create: [hasOnlyValidProperties, hasRequiredProperties, isValidDate, hasValidTime, isValidNumber, asyncErrorBoundary(create)],
-  update: [reservationExists, hasOnlyValidProperties, hasRequiredProperties, hasValidStatus, asyncErrorBoundary(update), asyncErrorBoundary(updateReservationStatus)],
+  create: [hasOnlyValidProperties, hasRequiredProperties, validateDate, hasReservationTime, peopleIsANumber, asyncErrorBoundary(create)],
+  update: [reservationExists, hasOnlyValidProperties, hasRequiredProperties, asyncErrorBoundary(update), asyncErrorBoundary(updateReservationStatus)],
 };
