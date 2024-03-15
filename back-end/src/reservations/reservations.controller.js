@@ -42,7 +42,7 @@ function validateDate(req, res, next) {
 }
 
 function hasReservationTime(req, res, next) {
-  const regex = /^([0-5][0-9]):([0-5][0-9])$/;
+  const regex = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/;
   let time = req.body.data.reservation_time;
   const valid = time.match(regex);
 
