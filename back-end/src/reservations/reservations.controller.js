@@ -98,6 +98,7 @@ function notTuesday(req, res, next) {
 function reservationDuringHours(req, res, next) {
   const time = req.body.data.reservation_time;
   const hours = parseInt(time.split(':')[0]); 
+  const minutes = parseInt(time.split(':')[1]);
   
   const reservationTime = new Date(); // Get current date and time
   reservationTime.setHours(hours); // Set the hours portion of the date
