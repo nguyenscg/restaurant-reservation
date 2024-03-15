@@ -66,6 +66,22 @@ function peopleIsANumber(req, res, next) {
   });
 }
 
+// middleware that is intended to check whether a reservation is being made for a future time
+function noPastReservations(req, res, next) {
+  const { reservation_date, reservation_time } = req.body.data;
+  const now = Date.now();
+  const proposedReservation = new Date(`${reservation_date} ${reservation_time}`).valueOf();
+
+  if (proposedReservation > now) {
+    next(); // Call next middleware
+  }
+    // If reservation is for a past time, send an error response
+    next({
+      status: 400,
+      message: "Reservation must be in future."
+    });
+}
+
 
 // function hasValidStatus(req, res, next) {
 //   const { status } = req.body.data;
@@ -145,6 +161,6 @@ async function updateReservationStatus(req, res, next) {
 module.exports = {
   list: asyncErrorBoundary(list),
   read: [reservationExists, asyncErrorBoundary(read)],
-  create: [hasOnlyValidProperties, hasRequiredProperties, validateDate, hasReservationTime, peopleIsANumber, asyncErrorBoundary(create)],
+  create: [hasOnlyValidProperties, hasRequiredProperties, validateDate, hasReservationTime, peopleIsANumber, noPastReservations, asyncErrorBoundary(create)],
   update: [reservationExists, hasOnlyValidProperties, hasRequiredProperties, asyncErrorBoundary(update), asyncErrorBoundary(updateReservationStatus)],
 };
