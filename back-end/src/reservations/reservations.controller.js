@@ -73,13 +73,26 @@ function noPastReservations(req, res, next) {
   const proposedReservation = new Date(`${reservation_date} ${reservation_time}`).valueOf();
 
   if (proposedReservation > now) {
-    next(); // Call next middleware
+    return next(); // Call next middleware
   }
     // If reservation is for a past time, send an error response
     next({
       status: 400,
       message: "Reservation must be in future."
     });
+}
+
+function notTuesday(req, res, next) {
+  const date = req.body.data.reservation_date;
+  const weekday = new Date(date).getUTCDay();
+  if (weekday === 2) {
+    // If reservation date is Tuesday, send an error response
+    next({
+      status: 400,
+      message: "Restaurant is closed on Tuesdays."
+    });
+  }
+  return next(); 
 }
 
 
@@ -161,6 +174,6 @@ async function updateReservationStatus(req, res, next) {
 module.exports = {
   list: asyncErrorBoundary(list),
   read: [reservationExists, asyncErrorBoundary(read)],
-  create: [hasOnlyValidProperties, hasRequiredProperties, validateDate, hasReservationTime, peopleIsANumber, noPastReservations, asyncErrorBoundary(create)],
+  create: [hasOnlyValidProperties, hasRequiredProperties, validateDate, hasReservationTime, peopleIsANumber, noPastReservations, notTuesday, asyncErrorBoundary(create)],
   update: [reservationExists, hasOnlyValidProperties, hasRequiredProperties, asyncErrorBoundary(update), asyncErrorBoundary(updateReservationStatus)],
 };
