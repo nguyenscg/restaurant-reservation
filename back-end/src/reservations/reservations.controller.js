@@ -95,6 +95,34 @@ function notTuesday(req, res, next) {
   return next(); 
 }
 
+function reservationDuringHours(req, res, next) {
+  const time = req.body.data.reservation_time;
+  const hours = parseInt(time.split(':')[0]); 
+  
+  const reservationTime = new Date(); // Get current date and time
+  reservationTime.setHours(hours); // Set the hours portion of the date
+  reservationTime.setMinutes(minutes); // set the minutes portion of the date
+  
+  // Check if reservation time is after 10:30AM
+  if (reservationTime.getHours() < 10 || (reservationTime.getHours() === 10 && reservationTime.getMinutes() < 30)) {
+    return next({
+      status: 400,
+      message: "Restaurant must be after 10:30AM",
+    });
+  }
+  
+  // Check if reservation time is before 9:30PM
+  if (reservationTime.getHours() > 21 || (reservationTime.getHours() === 21 && reservationTime.getMinutes() >= 30)) {
+    return next({
+      status: 400,
+      message: "Restaurant must be before 9:30PM",
+    });
+  }
+  
+  // If both conditions are satisfied, proceed to the next middleware
+  return next();
+}
+
 
 // function hasValidStatus(req, res, next) {
 //   const { status } = req.body.data;
@@ -174,6 +202,6 @@ async function updateReservationStatus(req, res, next) {
 module.exports = {
   list: asyncErrorBoundary(list),
   read: [reservationExists, asyncErrorBoundary(read)],
-  create: [hasOnlyValidProperties, hasRequiredProperties, validateDate, hasReservationTime, peopleIsANumber, noPastReservations, notTuesday, asyncErrorBoundary(create)],
+  create: [hasOnlyValidProperties, hasRequiredProperties, validateDate, hasReservationTime, peopleIsANumber, noPastReservations, notTuesday, reservationDuringHours, asyncErrorBoundary(create)],
   update: [reservationExists, hasOnlyValidProperties, hasRequiredProperties, asyncErrorBoundary(update), asyncErrorBoundary(updateReservationStatus)],
 };
