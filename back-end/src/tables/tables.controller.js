@@ -56,11 +56,23 @@ function validateTableName(req, res, next) {
   
     // Check if reservation_id is missing
     if (!reservation_id) {
-      return res.status(400).json({ error: 'Reservation ID is missing' });
+      return next({
+        status: 400,
+        message: "numberOfGuests must be a positive number."
+      });
     }
   
     // If reservation_id is provided, call next middleware
     next();
+  }
+
+  function tableOccupied(req, res, next) {
+    if (res.locals.table.occupied) {
+      return next({
+        status: 400,
+        message: "Table is occupied."
+      });
+    }
   }
 
 // list all tables
@@ -112,5 +124,5 @@ async function update(req, res, next) {
 module.exports = {
     list: asyncErrorBoundary(list),
     create: [hasRequiredProperties, validateTableName, capacityIsANumber, asyncErrorBoundary(create)],
-    update: [asyncErrorBoundary(tableExists), hasSufficientCapacity, validateReservationId, asyncErrorBoundary(update)],
+    update: [asyncErrorBoundary(tableExists), hasSufficientCapacity, validateReservationId, tableOccupied, asyncErrorBoundary(update)],
 }
