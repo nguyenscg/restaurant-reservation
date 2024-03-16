@@ -125,19 +125,21 @@ function reservationDuringHours(req, res, next) {
 }
 
 
-// function hasValidStatus(req, res, next) {
-//   const { status } = req.body.data;
-//   const resStatus = res.locals.reservation.status;
+function hasValidStatus(req, res, next) {
+  const { status } = req.body.data;
 
-//   if (status === "booked" || status === "seated" || status === "finished" || status === "cancelled") {
-//     res.locals.status = status;
-//     return next();
-//   }
-//   next({
-//     status: 400,
-//     message: `Invalid status`,
-//   });
-// }
+  if (['booked', 'seated', 'finished', 'cancelled'].includes(status)) {
+    // Store valid status in res.locals for use in subsequent handlers
+    res.locals.status = status;
+    return next(); // Valid status, so move to the next middleware or route handler
+  }
+  
+  // Invalid status, so pass an error to the error handler
+  return next({
+    status: 400,
+    message: "Invalid status"
+  });
+}
 
 function excludeFinishedReservations(req, res, next) {
   const { date } = req.query;
@@ -227,5 +229,5 @@ module.exports = {
   list: asyncErrorBoundary(list),
   read: [reservationExists, asyncErrorBoundary(read)],
   create: [hasOnlyValidProperties, hasRequiredProperties, validateDate, hasReservationTime, peopleIsANumber, noPastReservations, notTuesday, reservationDuringHours, asyncErrorBoundary(create)],
-  update: [reservationExists, hasOnlyValidProperties, hasRequiredProperties, asyncErrorBoundary(update), asyncErrorBoundary(updateReservationStatus)],
+  update: [reservationExists, hasOnlyValidProperties, hasRequiredProperties, hasValidStatus, asyncErrorBoundary(update), asyncErrorBoundary(updateReservationStatus)],
 };
