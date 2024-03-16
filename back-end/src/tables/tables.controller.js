@@ -3,17 +3,6 @@ const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 const hasProperties = require ("../errors/hasProperties");
 const hasRequiredProperties = hasProperties("table_name", "capacity");
 
-async function hasValidName(req, res, next) {
-    const table_name = req.body.data.table_name;
-    if (!table_name) {
-        return next({
-            status: 400,
-            message: `Invalid table_name`
-        })
-    }
-    next();
-}
-
 function validateTableName(req, res, next) {
     const table_name = req.body.data.table_name;
   
@@ -21,7 +10,7 @@ function validateTableName(req, res, next) {
     if (table_name.length < 2) {
       return next({
         status: 400,
-        message: 'Table name must be more than one character'
+        message: "table_name must be more than one character"
       });
     }
   
@@ -31,7 +20,7 @@ function validateTableName(req, res, next) {
   
 
   function capacityIsANumber(req, res, next) {
-    const capacity = req.body.data.capacity; // Corrected the typo here from 'capcity' to 'capacity'
+    const capacity = req.body.data.capacity;
     if (capacity > 0 && typeof capacity === "number") { // Changed 'people' to 'capacity'
       return next();
     }
@@ -89,6 +78,6 @@ async function update(req, res, next) {
 
 module.exports = {
     list: asyncErrorBoundary(list),
-    create: [hasRequiredProperties, hasValidName, validateTableName, capacityIsANumber, asyncErrorBoundary(create)],
+    create: [hasRequiredProperties, validateTableName, capacityIsANumber, asyncErrorBoundary(create)],
     update: [asyncErrorBoundary(tableExists), asyncErrorBoundary(update)],
 }
