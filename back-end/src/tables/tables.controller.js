@@ -29,6 +29,39 @@ function validateTableName(req, res, next) {
       message: "Valid capacity property required.",
     });
   }
+  
+  function hasSufficientCapacity(req, res, next) {
+    const capacity = res.locals.table.capacity;
+    const numberOfGuests = req.body.data.people;
+  
+    if (typeof numberOfGuests !== 'number' || numberOfGuests <= 0) {
+      return next({
+        status: 400,
+        message: "numberOfGuests must be a positive number."
+      });
+    }
+  
+    if (capacity >= numberOfGuests) {
+      return next();
+    } else {
+      return next({
+        status: 400,
+        message: "Insufficient table capacity."
+      });
+    }
+  }
+
+  function validateReservationId(req, res, next) {
+    const { reservation_id } = req.body;
+  
+    // Check if reservation_id is missing
+    if (!reservation_id) {
+      return res.status(400).json({ error: 'Reservation ID is missing' });
+    }
+  
+    // If reservation_id is provided, call next middleware
+    next();
+  }
 
 // list all tables
 async function list(req, res) {
@@ -79,5 +112,5 @@ async function update(req, res, next) {
 module.exports = {
     list: asyncErrorBoundary(list),
     create: [hasRequiredProperties, validateTableName, capacityIsANumber, asyncErrorBoundary(create)],
-    update: [asyncErrorBoundary(tableExists), asyncErrorBoundary(update)],
+    update: [asyncErrorBoundary(tableExists), hasSufficientCapacity, validateReservationId, asyncErrorBoundary(update)],
 }
