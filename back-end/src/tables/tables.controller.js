@@ -14,6 +14,33 @@ async function hasValidName(req, res, next) {
     next();
 }
 
+function validateTableName(req, res, next) {
+    const table_name = req.body.data.table_name;
+  
+    // Check if table_name is one character or less
+    if (table_name.length < 2) {
+      return next({
+        status: 400,
+        message: 'Table name must be more than one character'
+      });
+    }
+  
+    // If validation passes, call next middleware
+    next();
+  }
+  
+
+  function capacityIsANumber(req, res, next) {
+    const capacity = req.body.data.capacity; // Corrected the typo here from 'capcity' to 'capacity'
+    if (capacity > 0 && typeof capacity === "number") { // Changed 'people' to 'capacity'
+      return next();
+    }
+    next({
+      status: 400,
+      message: "Valid capacity property required.",
+    });
+  }
+
 // list all tables
 async function list(req, res) {
     const data = await service.list();
@@ -62,6 +89,6 @@ async function update(req, res, next) {
 
 module.exports = {
     list: asyncErrorBoundary(list),
-    create: [hasRequiredProperties, hasValidName, asyncErrorBoundary(create)],
+    create: [hasRequiredProperties, hasValidName, validateTableName, capacityIsANumber, asyncErrorBoundary(create)],
     update: [asyncErrorBoundary(tableExists), asyncErrorBoundary(update)],
 }
