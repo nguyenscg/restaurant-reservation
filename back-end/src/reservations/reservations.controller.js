@@ -179,12 +179,17 @@ async function create(req, res) {
 }
 
 async function update(req, res) {
-  const updatedReservation = {
-    ...req.body.data,
-    reservation_id: res.locals.reservation.reservation_id,
-  };
-  const data = await service.update(updatedReservation);
-  res.status(200).json({ data });
+  try {
+    const updatedReservation = {
+      ...req.body.data,
+      reservation_id: res.locals.reservation.reservation_id,
+    };
+    const data = await service.update(updatedReservation);
+    res.status(200).json({ data });
+  } catch (error) {
+    // Handle the error appropriately
+    res.status(500).json({ error: error.message });
+  }
 }
 
 async function updateReservationStatus(req, res, next) {
