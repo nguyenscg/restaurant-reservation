@@ -29,12 +29,16 @@ function ReservationCreate() {
     };
 
     // display a submit button that when clicked, saves new reservation, then displays the /dashboard page for the date of the new reservation
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         const abortController = new AbortController();
-        createReservation(formData, abortController.signal);
-        history.push(`/dashboard?date=${formData.reservation_date}`);
-    }
+        try {
+            await createReservation(formData, abortController.signal);
+            history.push(`/dashboard?date=${formData.reservation_date}`);
+        } catch (error) {
+            setReservationError(error.message); // Set the error message in case of an error
+        }
+    };
 
     return (
         <div className="reservation-new">
