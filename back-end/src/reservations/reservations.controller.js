@@ -55,14 +55,14 @@ function hasReservationTime(req, res, next) {
   });
 }
 
-function peopleIsANumber(req, res, next) {
+function validPeople(req, res, next) {
   const people = req.body.data.people;
-  if (people > 0 && Number.isInteger(people)) {
+  if (people && people > 0 && typeof people === "number") {
     return next();
   }
   next({
+    message: "people is required",
     status: 400,
-    message: "Valid people property required.",
   });
 }
 
@@ -228,6 +228,15 @@ async function updateReservationStatus(req, res, next) {
 module.exports = {
   list: asyncErrorBoundary(list),
   read: [reservationExists, asyncErrorBoundary(read)],
-  create: [hasOnlyValidProperties, hasRequiredProperties, validateDate, hasReservationTime, peopleIsANumber, noPastReservations, notTuesday, reservationDuringHours, asyncErrorBoundary(create)],
+  create: [
+    hasOnlyValidProperties, 
+    hasRequiredProperties, 
+    validateDate, 
+    hasReservationTime, 
+    validPeople, 
+    noPastReservations, 
+    notTuesday, 
+    reservationDuringHours, 
+    asyncErrorBoundary(create)],
   update: [reservationExists, hasOnlyValidProperties, hasRequiredProperties, hasValidStatus, asyncErrorBoundary(update), asyncErrorBoundary(updateReservationStatus)],
 };
