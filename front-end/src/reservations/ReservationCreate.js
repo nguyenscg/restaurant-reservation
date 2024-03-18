@@ -4,6 +4,7 @@ import React, { useState } from "react"; // import React and useState hook
 import { createReservation } from "../utils/api"; // import createReservation function
 import { useHistory } from "react-router-dom"; // import useHistory hook
 import ReservationForm from "./ReservationForm"; // import Reservation form component
+import ErrorAlert from "../layout/ErrorAlert";
 
 function ReservationCreate() {
     // inputs: first_name, last_name, mobile_number, reservation_date, reservation_time, people
@@ -43,13 +44,14 @@ function ReservationCreate() {
     return (
         <div className="reservation-new">
             <h1>Create Reservation:</h1>
+            <ErrorAlert error={reservationError} />
             <ReservationForm
                 formData={formData}
                 handleChange={handleChange}
                 handleSubmit={handleSubmit}
             />
             <div>
-                <button type="btn" onClick={() => history.push("/")}>Cancel</button>
+                <button type="button" onClick={() => history.push("/")}>Cancel</button>
                 <button type="submit" onClick={handleSubmit}>Submit</button>
             </div>
         </div>
