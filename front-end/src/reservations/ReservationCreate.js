@@ -33,6 +33,7 @@ function ReservationCreate() {
     const handleSubmit = (event) => {
         event.preventDefault();
         const abortController = new AbortController();
+        createReservation(formData, controller.signal)
             history.push(`/dashboard?date=${formData.reservation_date}`);
     };
 
