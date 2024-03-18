@@ -30,7 +30,7 @@ function ReservationCreate() {
     };
 
     // display a submit button that when clicked, saves new reservation, then displays the /dashboard page for the date of the new reservation
-    const handleSubmit = async (event) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
         const abortController = new AbortController();
             history.push(`/dashboard?date=${formData.reservation_date}`);
