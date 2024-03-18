@@ -57,7 +57,7 @@ function hasReservationTime(req, res, next) {
 
 function peopleIsANumber(req, res, next) {
   const people = req.body.data.people;
-  if (people > 0 && typeof people === "number") {
+  if (people > 0 && Number.isInteger(people)) {
     return next();
   }
   next({
