@@ -15,11 +15,11 @@ function ReservationCreate() {
         mobile_number: "",
         reservation_date: "",
         reservation_time: "",
-        people: 0,
+        people: "",
     }
     const [formData, setFormData] = useState({...initialFormData}); // initalize state of reservation
     const history = useHistory();
-    const [reservationError, setReservationError] = useState(false); // initialize state for reservation error
+    const [reservationError, setReservationError] = useState(null); // initialize state for reservation error
 
     // handle changes made to inputs so they can correctly be submitted
     const handleChange = ({ target }) => {
@@ -32,9 +32,17 @@ function ReservationCreate() {
     // display a submit button that when clicked, saves new reservation, then displays the /dashboard page for the date of the new reservation
     const handleSubmit = (event) => {
         event.preventDefault();
-        const abortController = new AbortController();
-        createReservation(formData, controller.signal)
-            history.push(`/dashboard?date=${formData.reservation_date}`);
+        const reservationData = {
+            ...formData,
+            people: Number(formData.people),
+        };
+        createReservation(reservationData)
+            .then((newReservation) =>
+            history.push(`/dashboard?date={formatAsDate(newReservation.reservation_date)}`)
+            )
+            .catch((error) => {
+                setReservationError(error);
+            })
     };
 
     return (
