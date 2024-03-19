@@ -9,17 +9,6 @@ function ReservationEdit() {
     const [reservation, setReservation] = useState({});
     const history = useHistory();
 
-    const initialFormData = {
-        first_name: "",
-        last_name: "",
-        mobile_number: "",
-        reservation_date: "",
-        reservation_time: "",
-        people: 0,
-    }
-
-    const [formData, setFormData] = useState({ ...initialFormData });
-
     useEffect(() => {
         const getReservation = async () => {
             const response = await readReservation(reservation_id);
@@ -46,7 +35,7 @@ function ReservationEdit() {
         <div className="reservation-edit">
             <h1>Edit Reservation:</h1>
             <ReservationForm
-                formData={formData}
+                formData={reservation}
                 handleChange={handleChange}
                 handleSubmit={handleSubmit}
             />

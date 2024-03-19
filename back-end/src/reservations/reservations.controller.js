@@ -29,6 +29,19 @@ function hasOnlyValidProperties(req, res, next) {
   next();
 }
 
+function validateMobile(req, res, next) {
+  const { mobile } = req.body;
+  const pattern = /^\d{3}[-]\d{3}[-]\d{4}$/;
+  if (pattern.test(mobile)) {
+    // If the mobile number is valid, proceed to the next middleware
+    next();
+  } else {
+    // If the mobile number is invalid, send an error response
+    res.status(400).send('Invalid mobile number format. Please use xxx-xxx-xxxx.');
+  }
+
+}
+
 function validateDate(req, res, next) {
   const date = req.body.data.reservation_date;
   const valid = Date.parse(date);
@@ -230,7 +243,8 @@ module.exports = {
   read: [reservationExists, asyncErrorBoundary(read)],
   create: [
     hasOnlyValidProperties, 
-    hasRequiredProperties, 
+    hasRequiredProperties,
+    validateMobile, 
     validateDate, 
     hasReservationTime, 
     validPeople, 
