@@ -89,10 +89,14 @@ export async function readReservation(reservation_id, signal) {
 export async function updateReservation(reservation, signal) {
   const { reservation_id } = reservation; // Destructure reservation to get the reservation ID
   const url = `${API_BASE_URL}/reservations/${reservation_id}`;
+  const newReservation = {...reservation}
+  delete newReservation.reservation_id;
+  delete newReservation.created_at;
+  delete newReservation.updated_at;
   const options = {
     method: "PUT",
     headers,
-    body: JSON.stringify({ data: reservation }),
+    body: JSON.stringify({ data: newReservation }),
     signal,
   };
   return await fetchJson(url, options, reservation);

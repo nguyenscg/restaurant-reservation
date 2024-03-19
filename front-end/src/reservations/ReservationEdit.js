@@ -28,7 +28,7 @@ function ReservationEdit() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         await updateReservation(reservation);
-        history.push(`/reservations/${reservation.id}`)
+        history.push(`/dashboard/${reservation.reservation_date}`)
     }
 
     return (
