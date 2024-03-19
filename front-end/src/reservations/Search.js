@@ -6,6 +6,8 @@ import { listReservations } from "../utils/api";
 
 function Search() {
     const [mobileNumber, setMobileNumber] = useState(""); // initialize state of mobile number
+    const [customers, setCustomers] = useState([]);
+    const [click, setClick] = useState(false);
 
     const handleChange = (event) => {
         setMobileNumber(event.target.value);
@@ -13,8 +15,17 @@ function Search() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-    }
+        // Call listReservations function with mobile_number parameter to fetch reservations
+        listReservations({ mobile_number: mobileNumber })
+            .then((reservationData) => {
+                setCustomers(reservationData);
+                setClick(true); // Set click state to true to render Reservations component
+            })
+            .catch((error) => console.error(error));
+    };
+
     return (
+        <div className="search">
         <form name="reservation-create" onSubmit={handleSubmit}>
             <div className="search">
                 <h2>Search</h2>
@@ -31,6 +42,8 @@ function Search() {
             </div>
             <button type="submit">Find</button>
         </form>
+        {click && <Reservations reservations={customers} />}
+    </div>
     );
 }
 
