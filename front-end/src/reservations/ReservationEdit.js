@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { readReservation, updateReservation } from "../utils/api";
 import ReservationForm from "./ReservationForm";
+import ErrorAlert from "../layout/ErrorAlert";
 
 function ReservationEdit() {
     const {reservation_id} = useParams();
 
     const [reservation, setReservation] = useState({});
     const history = useHistory();
+    const [reservationError, setReservationError] = useState(null); // initialize state for reservation error
 
     useEffect(() => {
         const getReservation = async () => {
@@ -27,13 +29,18 @@ function ReservationEdit() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        await updateReservation(reservation);
-        history.push(`/dashboard/${reservation.reservation_date}`)
-    }
+        try {
+            await updateReservation(reservation);
+            history.push(`/dashboard/${reservation.reservation_date}`);
+        } catch (error) {
+            setReservationError(error);
+        }
+    };
 
     return (
         <div className="reservation-edit">
             <h1>Edit Reservation:</h1>
+            <ErrorAlert error={reservationError} />
             <ReservationForm
                 formData={reservation}
                 handleChange={handleChange}

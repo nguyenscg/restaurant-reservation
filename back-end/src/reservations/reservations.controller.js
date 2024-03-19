@@ -30,9 +30,10 @@ function hasOnlyValidProperties(req, res, next) {
 }
 
 function validateMobile(req, res, next) {
-  const { mobile } = req.body;
+  const { mobile_number } = req.body.data;
   const pattern = /^\d{3}[-]\d{3}[-]\d{4}$/;
-  if (pattern.test(mobile)) {
+  const valid = mobile_number.match(pattern);
+  if (valid) {
     // If the mobile number is valid, proceed to the next middleware
     next();
   } else {
