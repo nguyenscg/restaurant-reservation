@@ -50,7 +50,7 @@ function TableCreate() {
   };
 
   return (
-    <section>
+    <div className="table-new">
       <h2>New Table:</h2>
       <ErrorAlert error={createTableError} />
       <TableForm
@@ -60,7 +60,7 @@ function TableCreate() {
         submitHandler={submitHandler}
         cancelHandler={cancelHandler}
       />
-    </section>
+    </div>
   );
 }
 
