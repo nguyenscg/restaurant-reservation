@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { listReservations } from "../utils/api";
+import { Link } from "react-router-dom";
 
 function Reservations() {
     const [reservations, setReservations] = useState([]);
@@ -31,6 +32,7 @@ function Reservations() {
                     <th scope="col">Reservation Date</th>
                     <th scope="col">Reservation Time</th>
                     <th scope="col">People</th>
+                    <th scope="col">Edit</th>
                 </tr>
             </thead>
             <tbody>
@@ -42,6 +44,7 @@ function Reservations() {
                         <td>{reservation.reservation_date}</td>
                         <td>{reservation.reservation_time}</td>
                         <td>{reservation.people}</td>
+                        <td><Link to={`/reservations/${reservation.reservation_id}/edit`} className="btn btn-secondary">Edit</Link></td>
                     </tr>
                 ))}
             </tbody>
