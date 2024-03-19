@@ -31,16 +31,17 @@ function hasOnlyValidProperties(req, res, next) {
 
 function validateMobile(req, res, next) {
   const { mobile_number } = req.body.data;
-  const pattern = /^\d{3}[-]\d{3}[-]\d{4}$/;
+  let pattern = /^\d{3}[-]\d{3}[-]\d{4}$/;
   const valid = mobile_number.match(pattern);
-  if (valid) {
+  
+  if (valid !== null) {
     // If the mobile number is valid, proceed to the next middleware
-    next();
-  } else {
-    // If the mobile number is invalid, send an error response
-    res.status(400).send('Invalid mobile number format. Please use xxx-xxx-xxxx.');
-  }
-
+    return next();
+  } 
+    next({
+      status: 400,
+      message: "Invalid mobile number format. Please use xxx-xxx-xxxx.",
+    });
 }
 
 function validateDate(req, res, next) {
