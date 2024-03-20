@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router";
-import { listTables } from "../utils/api";
+import { listTables, readReservation } from "../utils/api";
 
 function ReservationSeat() {
     const { reservation_id } = useParams();
     const history = useHistory();
+    const [reservation, setReservation] = useState({});
+
+    useEffect(() => {
+        const getReservation = async () => {
+            const response = await readReservation(reservation_id);
+            setReservation(response);
+        }
+        getReservation();
+    }, [reservation_id]);
 
 //     have the following required and not-nullable fields:
 //      - Table number: `<select name="table_id" />`. The text of each option must be `{table.table_name} - {table.capacity}` so the tests can find the options.
