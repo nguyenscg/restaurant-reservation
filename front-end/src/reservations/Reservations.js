@@ -32,21 +32,6 @@ function Reservations({ reservations }) {
             }
             return () => controller.abort();
           };
-
-          const handleSeat = (event) => {
-            event.preventDefault();
-            const controller = new AbortController();
-
-            // Update the reservation status to "seated"
-            updateReservationStatus({ status: "seated" }, reservation_id, controller.signal)
-              .then(() => {
-                console.log("Reservation status updated to seated.");
-              })
-              .catch((error) => {
-                setError(error);
-                console.error(error);
-              });
-          };
           
           if (status !== "finished") {
             return (
@@ -62,7 +47,7 @@ function Reservations({ reservations }) {
                   {status === "booked" ? (
                     <div>
                       <a href={`/reservations/${reservation_id}/seat`}>
-                        <button className="btn-dark" onClick={handleSeat}>Seat</button>
+                        <button className="btn-dark">Seat</button>
                       </a>
                       <a href={`/reservations/${reservation_id}/edit`}>
                         <button className="btn-dark">Edit</button>
