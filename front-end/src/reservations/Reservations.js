@@ -32,6 +32,7 @@ function Reservations() {
                     <th scope="col">Reservation Date</th>
                     <th scope="col">Reservation Time</th>
                     <th scope="col">People</th>
+                    <th scope="col">Status</th>
                     <th scope="col">Edit</th>
                     <th scope="col">Seat?</th>
                 </tr>
@@ -45,6 +46,7 @@ function Reservations() {
                         <td>{reservation.reservation_date}</td>
                         <td>{reservation.reservation_time}</td>
                         <td>{reservation.people}</td>
+                        <td data-reservation-id-status={reservation.reservation_id}>{reservation.status}</td>
                         <td><Link to={`/reservations/${reservation.reservation_id}/edit`} className="btn btn-secondary">Edit</Link></td>
                         <td><button className="btn btn-secondary">Seat</button></td>
                     </tr>
