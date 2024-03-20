@@ -6,6 +6,24 @@ function ReservationSeat() {
     const { reservation_id } = useParams();
     const history = useHistory();
     const [reservation, setReservation] = useState({});
+    const [tables, setTables] = useState([]);
+    const [error, setError] = useState(null);
+
+    // load all tables and add these tables to dropdown
+    useEffect(() => {
+        const abortController = new AbortController();
+        setError(null);
+        async function loadTables() {
+            try {
+                const response = await listTables(abortController.signal);
+                setTables(response)
+            } catch (error) {
+                setError(error)
+            }
+        }
+        loadTables()
+        return () => abortController.abort();
+    }, []);
 
     useEffect(() => {
         const getReservation = async () => {
