@@ -156,24 +156,6 @@ function hasValidStatus(req, res, next) {
   });
 }
 
-function excludeFinishedReservations(req, res, next) {
-  const { date } = req.query;
-  // Call your service to get reservations for the given date.
-  service
-    .listReservationsByDate(date)
-    .then((reservations) => {
-      // Filter out reservations with a 'finished' status.
-      const filteredReservations = reservations.filter(
-        (reservation) => reservation.status !== 'finished'
-      );
-      // Store the filtered reservations back into the response locals.
-      res.locals.reservations = filteredReservations;
-      // Continue to the next middleware or route handler.
-      next();
-    })
-    .catch(next); // Error handling.
-}
-
 async function list(req, res, next) {
   try {
     const { date, mobile_number } = req.query;
@@ -228,9 +210,8 @@ async function update(req, res) {
 }
 
 async function updateReservationStatus(req, res, next) {
-  const { reservation_id } = req.params;
-  const { status } = req.body;
-
+  const { reservation_id } = res.locals.reservation;
+  const { status } = req.body.data;
   try {
     const updatedReservation = await updateStat(reservation_id, status);
     res.json({ data: updatedReservation });
