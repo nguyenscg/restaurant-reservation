@@ -39,7 +39,7 @@ function Dashboard({ date }) {
   function loadDashboard() {
     const abortController = new AbortController();
     setReservationsError(null);
-    listReservations({ date }, abortController.signal)
+    listReservations({ date: dateToday }, abortController.signal)
       .then(setReservations)
       .catch(setReservationsError);
     return () => abortController.abort();
@@ -57,22 +57,22 @@ function Dashboard({ date }) {
   // handler for next day
   const handleNext = (event) => {
     event.preventDefault();
-    history.push("/dashboard");
-    setDateToday(next(dateToday));
+    setDateToday(next(dateToday))
+    history.push(`/dashboard?date=${next(dateToday)}`);
   }
 
   // handler for today
   const handleToday = (event) => {
     event.preventDefault();
-    history.push("/dashboard");
-    setDateToday(date);
+    setDateToday(today())
+    history.push(`/dashboard?date=${today()}`);
   }
 
 
 // handler for previous day
   const handlePrev = (event) => {
     event.preventDefault();
-    history.push("/dashboard");
+    history.push(`/dashboard?date=${previous(dateToday)}`);
     setDateToday(previous(dateToday));
   }
 
