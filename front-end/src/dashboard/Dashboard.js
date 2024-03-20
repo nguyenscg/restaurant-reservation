@@ -15,13 +15,13 @@ import useQuery from "../utils/useQuery";
 function Dashboard({ date }) {
   const history = useHistory();
   const query = useQuery();
-
+  date = query.get("date") || date;
   // state hooks for manage reservaton data and potential errors
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
 
   // state hooks for managing the select date, defaulting to the date from query string or today's date
-  const [dateToday, setDateToday] = useState(query.get("data") || today());
+  const [dateToday, setDateToday] = useState(date);
 
   // state hooks for managing tables data and potential errors
   const [tables, setTables] = useState([]);

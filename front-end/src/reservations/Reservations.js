@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { listReservations } from "../utils/api";
 import { Link } from "react-router-dom";
 
-function Reservations() {
+function Reservations({ reservations }) {
     const [reservations, setReservations] = useState([]);
 
     useEffect(() => {
