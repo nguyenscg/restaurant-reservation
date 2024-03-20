@@ -214,7 +214,7 @@ async function updateReservationStatus(req, res, next) {
   const { status } = req.body.data;
   try {
     const updatedReservation = await updateStat(reservation_id, status);
-    res.json({ data: updatedReservation });
+    res.status(200).json({ data: updatedReservation });
   } catch (error) {
     next(error);
   }
@@ -236,4 +236,5 @@ module.exports = {
     reservationDuringHours, 
     asyncErrorBoundary(create)],
   update: [reservationExists, hasOnlyValidProperties, hasRequiredProperties, hasValidStatus, asyncErrorBoundary(update), asyncErrorBoundary(updateReservationStatus)],
+  updateReservationStatus: [reservationExists, hasValidStatus, asyncErrorBoundary(updateReservationStatus)],
 };
