@@ -2,6 +2,7 @@ const service = require("./tables.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 const hasProperties = require ("../errors/hasProperties");
 const hasRequiredProperties = hasProperties("table_name", "capacity");
+const reservationService = require("../reservations/reservations.service.js")
 
 function validateTableName(req, res, next) {
     const table_name = req.body.data.table_name;
@@ -53,43 +54,47 @@ function validateTableName(req, res, next) {
 
 // read reservation id
 async function reservationExists(req, res, next) {
-  const reservation = res.locals.table.reservation_id;
+  const { reservation_id } = req.body.data;
+  const reservation = await reservationService.read(reservation_id);
 
   if (reservation) {
-      return next();
+    res.locals.reservation = reservation;
+    return next();
   }
-  next({ status: 404, message: "reservation_id is required" });
+  next({ 
+    status: 404, 
+    message: `Reservation with ID ${reservation_id} not found.`, });
 }
 
 
-  function tableOccupied(req, res, next) {
-    const occupied = res.locals.table.reservation_id;
-    const status = res.locals.reservation.status;
-    const people = res.locals.reservation.people;
-    const capacity = res.locals.table.capacity;
-    
-    if (occupied) {
-      return next({
-        status: 400,
-        message: `Table ${res.locals.table.table_id} is occupied. Pick another table`,
-      });
-    }
-    
-    if (status === "seated") {
-      return next({
-        status: 400,
-        message: `This reservation has already been seated`,
-      });
-    }
-    
-    if (people > capacity) {
-      return next({
-        status: 400,
-        message: `This table can't sit ${people} people. Choose another table with higher capacity.`
-      });
-    }
-    next();
- }
+function tableOccupied(req, res, next) {
+  const occupied = res.locals.table.reservation_id;
+  const status = res.locals.reservation.status;
+  const people = res.locals.reservation.people;
+  const capacity = res.locals.table.capacity;
+  
+  if (occupied) {
+    return next({
+      status: 400,
+      message: `Table ${res.locals.table.table_id} is occupied. Pick another table`,
+    });
+  }
+  
+  if (status === "seated") {
+    return next({
+      status: 400,
+      message: `This reservation has already been seated`,
+    });
+  }
+  
+  if (people > capacity) {
+    return next({
+      status: 400,
+      message: `This table can't sit ${people} people. Choose another table with higher capacity.`
+    });
+  }
+  next();
+}
 
 //   async function seatTable(req, res, next) {
 //     const status = res.locals.reservation.status;
