@@ -40,9 +40,29 @@ function update(reservation_id, table_id) {
     });
 }
 
+function destroy(reservation_id, table_id) {
+    return knex.transaction(function (trx) {
+        return knex("reservations")
+            .where({ reservation_id })
+            .update({ status: "finished" })
+            .transacting(trx)
+            .then(() => {
+                return knex("tables")
+                    .where({ table_id })
+                    .update({
+                        reservation_id,
+                    })
+                    .transacting(trx);
+            })
+            .then(trx.commit)
+            .catch(trx.rollback);
+    });
+}
+
 module.exports = {
     list,
     read,
     create,
     update,
+    destroy,
 }

@@ -135,11 +135,19 @@ async function update(req, res, next) {
     try {
         const { reservation_id } = req.body.data;
         const updatedRecord = await service.update(reservation_id, res.locals.table.table_id);
-        console.log(updatedRecord);
         res.status(200).json({ data: updatedRecord });
     } catch (error) {
         next(error);
     }
+}
+
+async function destroy(req, res, next) {
+  try {
+    const data = await service.destroy(res.locals.table.reservation_id, res.locals.table.table_id)
+    res.status(200).json({ data });
+  } catch (error) {
+    next(error);
+  }
 }
 
 
@@ -148,4 +156,5 @@ module.exports = {
     list: asyncErrorBoundary(list),
     create: [hasRequiredProperties, validateTableName, capacityIsANumber, asyncErrorBoundary(create)],
     update: [asyncErrorBoundary(tableExists), reservationExists, tableOccupied, asyncErrorBoundary(update)],
+    destroy: [asyncErrorBoundary(tableExists), tableOccupied, asyncErrorBoundary(destroy)]
 }
