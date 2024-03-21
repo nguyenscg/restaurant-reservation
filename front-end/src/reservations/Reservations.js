@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { cancelReservation, updateReservationStatus } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 
@@ -46,12 +46,12 @@ function Reservations({ reservations }) {
                 <td>
                   {status === "booked" ? (
                     <div>
-                      <a href={`/reservations/${reservation_id}/seat`}>
+                      <Link to={`/reservations/${reservation_id}/seat`}>
                         <button className="btn-dark">Seat</button>
-                      </a>
-                      <a href={`/reservations/${reservation_id}/edit`}>
+                      </Link>
+                      <Link to={`/reservations/${reservation_id}/edit`}>
                         <button className="btn-dark">Edit</button>
-                      </a>
+                      </Link>
                       <button
                         className="btn-dark"
                         data-reservation-id-cancel={reservation_id}
