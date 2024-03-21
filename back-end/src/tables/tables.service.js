@@ -32,7 +32,6 @@ function update(reservation_id, table_id) {
                     .where({ table_id })
                     .update({
                         reservation_id,
-                        occupied: true
                     })
                     .transacting(trx);
             })
