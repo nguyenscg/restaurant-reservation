@@ -235,6 +235,14 @@ module.exports = {
     notTuesday, 
     reservationDuringHours, 
     asyncErrorBoundary(create)],
-  update: [reservationExists, hasOnlyValidProperties, hasRequiredProperties, hasValidStatus, asyncErrorBoundary(update), asyncErrorBoundary(updateReservationStatus)],
+  update: [
+    reservationExists, 
+    hasOnlyValidProperties, 
+    hasRequiredProperties,
+    validateDate,
+    hasReservationTime, 
+    hasValidStatus, 
+    asyncErrorBoundary(update), 
+    asyncErrorBoundary(updateReservationStatus)],
   updateReservationStatus: [reservationExists, hasValidStatus, asyncErrorBoundary(updateReservationStatus)],
 };
