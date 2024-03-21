@@ -96,17 +96,16 @@ function tableOccupied(req, res, next) {
   next();
 }
 
-//   async function seatTable(req, res, next) {
-//     const status = res.locals.reservation.status;
-
-//     if (status === "seated") {
-//         return next({
-//             status: 400,
-//             message: `Table is already seated`,
-//         });
-//     }
-//     next();
-// }
+function tableStatus(req, res, next) {
+  const status = res.locals.table.reservation_id; 
+  if (status == null) {
+    return next({
+      status: 400,
+      message: `Table ${res.locals.table.table_id} is not occupied.`,
+    });
+  }
+  next();
+}
 
 // list all tables
 async function list(req, res) {
@@ -156,5 +155,5 @@ module.exports = {
     list: asyncErrorBoundary(list),
     create: [hasRequiredProperties, validateTableName, capacityIsANumber, asyncErrorBoundary(create)],
     update: [asyncErrorBoundary(tableExists), reservationExists, tableOccupied, asyncErrorBoundary(update)],
-    destroy: [asyncErrorBoundary(tableExists), tableOccupied, asyncErrorBoundary(destroy)]
+    delete: [asyncErrorBoundary(tableExists), tableStatus, asyncErrorBoundary(destroy)]
 }

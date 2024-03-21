@@ -49,9 +49,7 @@ function destroy(reservation_id, table_id) {
             .then(() => {
                 return knex("tables")
                     .where({ table_id })
-                    .update({
-                        reservation_id,
-                    })
+                    .update({ reservation_id: null })
                     .transacting(trx);
             })
             .then(trx.commit)
