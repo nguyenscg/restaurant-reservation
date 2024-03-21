@@ -17,21 +17,22 @@ function Reservations({ reservations }) {
           reservation_time,
           people,
           status,
-        }) => { const cancelHandler = (e) => {
-            e.preventDefault();
-            const controller = new AbortController();
-            const message = `Do you want to cancel this reservation? This cannot be undone.`;
-            const clicked = window.confirm(message);
-            setError(null);
-            if (clicked) {
-              cancelReservation(
-                { status: "cancelled" },
-                reservation_id,
-                controller.signal
-              ).then(() => history.push("/"));
-            }
-            return () => controller.abort();
-          };
+        }) => { async function cancelHandler() {
+          const result = window.confirm(
+                  'Do you want to cancel this reservation? This cannot be undone.'
+              );
+              if (result) {
+                  const abortController = new AbortController();
+                  let status = 'cancelled';
+                  cancelReservation(
+                      status,
+                      reservation_id,
+                      abortController.signal
+                  ).then(() => {
+                      history.push('/');
+                  });
+              }
+        };
           
           if (status !== "finished") {
             return (

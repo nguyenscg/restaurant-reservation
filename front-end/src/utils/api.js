@@ -107,7 +107,7 @@ export async function cancelReservation(status, reservation_id) {
   const options = {
     method: "PUT",
     headers,
-    body: JSON.stringify({ data: status }),
+    body: JSON.stringify({ data: { status } }),
   };
   return await fetchJson(url, options);
 }
