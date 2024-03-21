@@ -77,13 +77,20 @@ function Dashboard({ date }) {
   }
 
   // handler for finish table
-  const handleFinish = (tableId) => {
-    if (window.confirm("Finish this table?")) {
-      finishTableError(tableId)
-        .then(() => {
-          loadTables();
-        })
-        .catch(setFinishTableError);
+  const handleFinish = async (tableId) => {
+
+    if (
+      window.confirm(
+        "Is this table ready to seat new guests? This cannot be undone."
+      )
+    ) {
+      try {
+        console.log(tableId)
+        await deleteTable(tableId);
+        history.go();
+      } catch (err) {
+        setFinishTableError(err);
+      }
     }
   };
 
