@@ -38,7 +38,7 @@ function ReservationCreate() {
         };
         createReservation(reservationData)
             .then((newReservation) =>
-            history.push(`/dashboard?date={formatAsDate(newReservation.reservation_date)}`)
+            history.push(`/dashboard?date=${newReservation.reservation_date}`)
             )
             .catch((error) => {
                 setReservationError(error);
