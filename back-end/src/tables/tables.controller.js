@@ -51,29 +51,57 @@ function validateTableName(req, res, next) {
     }
   }
 
-  function validateReservationId(req, res, next) {
-    const { reservation_id } = req.body;
-  
-    // Check if reservation_id is missing
-    if (!reservation_id) {
-      return next({
-        status: 400,
-        message: "numberOfGuests must be a positive number."
-      });
-    }
-  
-    // If reservation_id is provided, call next middleware
-    next();
+// read reservation id
+async function reservationExists(req, res, next) {
+  const reservation = res.locals.table.reservation_id;
+
+  if (reservation) {
+      return next();
   }
+  next({ status: 404, message: "reservation_id is required" });
+}
+
 
   function tableOccupied(req, res, next) {
-    if (res.locals.table.occupied) {
+    const occupied = res.locals.table.reservation_id;
+    const status = res.locals.reservation.status;
+    const people = res.locals.reservation.people;
+    const capacity = res.locals.table.capacity;
+    
+    if (occupied) {
       return next({
         status: 400,
-        message: "Table is occupied."
+        message: `Table ${res.locals.table.table_id} is occupied. Pick another table`,
       });
     }
-  }
+    
+    if (status === "seated") {
+      return next({
+        status: 400,
+        message: `This reservation has already been seated`,
+      });
+    }
+    
+    if (people > capacity) {
+      return next({
+        status: 400,
+        message: `This table can't sit ${people} people. Choose another table with higher capacity.`
+      });
+    }
+    next();
+ }
+
+//   async function seatTable(req, res, next) {
+//     const status = res.locals.reservation.status;
+
+//     if (status === "seated") {
+//         return next({
+//             status: 400,
+//             message: `Table is already seated`,
+//         });
+//     }
+//     next();
+// }
 
 // list all tables
 async function list(req, res) {
@@ -102,27 +130,17 @@ async function update(req, res, next) {
     try {
         const { reservation_id } = req.body.data;
         const updatedRecord = await service.update(reservation_id, res.locals.table.table_id);
+        console.log(updatedRecord);
         res.status(200).json({ data: updatedRecord });
     } catch (error) {
         next(error);
     }
 }
 
-// async function seatTable(req, res, next) {
-//     const status = res.locals.reservation.status;
-
-//     if (status === "seated") {
-//         return next({
-//             status: 400,
-//             message: `Table is already seated`,
-//         });
-//     }
-//     next();
-// }
 
 
 module.exports = {
     list: asyncErrorBoundary(list),
     create: [hasRequiredProperties, validateTableName, capacityIsANumber, asyncErrorBoundary(create)],
-    update: [asyncErrorBoundary(tableExists), hasSufficientCapacity, validateReservationId, tableOccupied, asyncErrorBoundary(update)],
+    update: [asyncErrorBoundary(tableExists), reservationExists, tableOccupied, asyncErrorBoundary(update)],
 }
